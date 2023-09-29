@@ -1,0 +1,76 @@
+import pandas as pd
+import requests
+from io import BytesIO
+import zipfile
+
+# Specify the UCI ML Repository URL for the dataset
+dataset_url = "https://archive.ics.uci.edu/ml/machine-learning-databases/00462/drugsCom_raw.zip"
+
+# Send an HTTP GET request to the URL
+response = requests.get(dataset_url)
+
+# Check if the request was successful
+if response.status_code == 200:
+    # Read the content of the response as bytes
+    zip_data = BytesIO(response.content)
+
+    # Create a ZipFile object from the bytes
+    with zipfile.ZipFile(zip_data, 'r') as zip_file:
+        # Extract the contents of the ZIP file
+        zip_file.extractall()
+
+        # Check the names of the extracted files
+        file_names = zip_file.namelist()
+
+        # Assuming the CSV file is named "drugsComTrain_raw.tsv"
+        # Load the CSV data into a DataFrame
+        for file_name in file_names:
+            if file_name.endswith(".tsv"):
+                df = pd.read_csv(file_name, sep='\t', encoding='utf-8')
+                break  # Assuming there's only one TSV file in the ZIP
+
+    # Now you have the data in the 'df' DataFrame
+    print("Data loaded successfully.")
+else:
+    print("Failed to retrieve the dataset. HTTP Status Code:", response.status_code)
+
+
+
+
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import accuracy_score
+import joblib
+
+# Load the downloaded dataset into a Pandas DataFrame (assuming 'df' is loaded as per the previous code)
+# Replace 'ColumnName' with the actual column names in your dataset
+X = df['review']  # Input data (text reviews)
+y = df['rating']  # Target variable (ratings, or whatever your target is)
+
+# Split the data into training and testing sets
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# Perform text vectorization using TF-IDF
+tfidf_vectorizer = TfidfVectorizer(max_features=5000)  # You can adjust the number of features as needed
+X_train_tfidf = tfidf_vectorizer.fit_transform(X_train)
+X_test_tfidf = tfidf_vectorizer.transform(X_test)
+
+# Create a machine learning model (Random Forest Classifier, for example)
+clf = RandomForestClassifier(n_estimators=100, random_state=42)
+
+# Train the model
+clf.fit(X_train_tfidf, y_train)
+
+# Make predictions on the test data
+y_pred = clf.predict(X_test_tfidf)
+
+# Evaluate the model (you can use other metrics as well)
+accuracy = accuracy_score(y_test, y_pred)
+print(f"Accuracy: {accuracy:.2f}")
+
+# Save the trained model to a file using joblib or another preferred method
+model_filename = 'personalized_medicine_model.pkl'
+joblib.dump(clf, model_filename)
+print(f"Model saved as {model_filename}")
