@@ -1,0 +1,15 @@
+overview of the code process:
+
+1. **Data Retrieval**: The code fetches a dataset from the UCI ML Repository using an HTTP request.
+
+2. **Data Extraction**: It extracts the contents of the downloaded ZIP file containing the dataset.
+
+3. **Data Preprocessing**: The code loads the dataset into a Pandas DataFrame, splits it into training and testing sets, and performs TF-IDF vectorization on text reviews.
+
+4. **Model Creation**: A Random Forest Classifier is created and trained on the training data.
+
+5. **Model Evaluation**: The trained model makes predictions on the test data, and its accuracy is calculated.
+
+6. **Model Saving**: The trained model is saved to a file using the joblib library.
+
+This process involves retrieving data, preparing it for machine learning, training a model, evaluating its performance, and saving it for future use.
