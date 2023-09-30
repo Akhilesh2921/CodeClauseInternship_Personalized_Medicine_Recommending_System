@@ -98,9 +98,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## Author
 
-- [Your Name](https://github.com/Akhilesh2456)
+- [Sai Akhilesh ](https://github.com/Akhilesh2456)
 
 Feel free to reach out for any questions or improvements!
-```
-
-Remember to replace "Your Name" with your actual name and update any additional project-specific information as needed.
+`
